@@ -10,14 +10,13 @@ import "xel/xel.min.js";
 // Everything below is just to show you how it works. You can delete all of it.
 // ----------------------------------------------------------------------------
 
-import { remote } from "electron";
+import { app } from "@electron/remote";
 import jetpack from "fs-jetpack";
 import { greet } from "./hello_world/hello_world";
 import env from "env";
 
-import { ipcRenderer as ipc } from 'electron';
+import { ipcRenderer } from 'electron';
 
-const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
 
 // Holy crap! This is browser window with HTML and stuff, but I can read
@@ -42,7 +41,7 @@ const drs = document.querySelectorAll('[draggable]')
 
 function handleDragEnd(e) {
   this.style.opacity = '0.4'
-  ipc.send('create-new-window', {
+  ipcRenderer.send('create-new-window', {
     x: e.screenX,
     y: e.screenY - e.toElement.offsetHeight
   })
@@ -71,7 +70,7 @@ function handleMadMode () {
   while (t < COUNT) {
     const x = width * Math.floor(t % 3)
     const y = height * Math.floor(t / 3)
-    ipc.send('create-new-window', {
+    ipcRenderer.send('create-new-window', {
       x, y, width, height
     })
     t++

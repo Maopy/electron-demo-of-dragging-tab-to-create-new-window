@@ -76,7 +76,18 @@ export default (name, options) => {
 
   state = ensureVisibleOnSomeDisplay(restore());
 
-  win = new BrowserWindow(Object.assign({}, options));
+  win = new BrowserWindow({
+    ...options,
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      nodeIntegrationInWorker: true,
+      sandbox: false,
+      webSecurity: false,
+      allowRunningInsecureContent: true,
+    },
+  });
 
   win.on("close", saveState);
 

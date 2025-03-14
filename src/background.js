@@ -5,12 +5,15 @@
 
 import path from "path";
 import url from "url";
-import { app, Menu, ipcMain as ipc } from "electron";
+import { app, Menu, ipcMain } from "electron";
 import { devMenuTemplate } from "./menu/dev_menu_template";
 import { editMenuTemplate } from "./menu/edit_menu_template";
 import createWindow from "./helpers/window";
+import { enable, initialize } from "@electron/remote/main";
+import "./menu/menubar";
 
-import './menu/menubar';
+// 初始化远程模块
+initialize();
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -42,6 +45,8 @@ app.on("ready", () => {
     titleBarStyle: 'hiddenInset'
   });
 
+  enable(mainWindow.webContents)
+
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, "app.html"),
@@ -59,11 +64,12 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-let wid = 0
-ipc.on('create-new-window', (e, opts) => {
+let wid = 0;
+ipcMain.on('create-new-window', (e, opts) => {
   // console.log(e.sender)
   // const { width, height } = e.sender.browserWindowOptions
   const child = createWindow('child', { ...opts, show: false })
+  enable(child.webContents)
 
   console.log(opts.x, opts.y)
   child.loadURL(
@@ -73,8 +79,8 @@ ipc.on('create-new-window', (e, opts) => {
       slashes: true,
       hash: '#wid: ' + ++wid
     })
-  )
+  );
   child.on('ready-to-show', () => {
-    child.show()
-  })
-})
+    child.show();
+  });
+});

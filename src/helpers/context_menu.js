@@ -1,10 +1,7 @@
 // This gives you default context menu (cut, copy, paste)
 // in all input fields and textareas across your app.
 
-import { remote } from "electron";
-
-const Menu = remote.Menu;
-const MenuItem = remote.MenuItem;
+import { Menu, MenuItem, getCurrentWindow } from "@electron/remote";
 
 const isAnyTextSelected = () => {
   return window.getSelection().toString() !== "";
@@ -46,12 +43,12 @@ document.addEventListener(
       case "TEXTAREA":
       case "INPUT":
         event.preventDefault();
-        textEditingMenu.popup(remote.getCurrentWindow());
+        textEditingMenu.popup(getCurrentWindow());
         break;
       default:
         if (isAnyTextSelected()) {
           event.preventDefault();
-          normalMenu.popup(remote.getCurrentWindow());
+          normalMenu.popup(getCurrentWindow());
         }
     }
   },

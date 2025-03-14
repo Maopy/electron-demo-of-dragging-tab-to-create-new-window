@@ -29,7 +29,7 @@ module.exports = env => {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: ["babel-loader"]
+          use: ["swc-loader"]
         },
         {
           test: /\.css$/,
